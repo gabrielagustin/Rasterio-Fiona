@@ -4,8 +4,7 @@ Examples
 
 
 Pages sources:
-
-https://rasterio.readthedocs.io/en/latest/
+ https://rasterio.readthedocs.io/en/latest/
 
 
 Dependences:
