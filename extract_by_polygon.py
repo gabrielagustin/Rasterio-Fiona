@@ -49,7 +49,7 @@ def generate_table_by_polygon(path_raster, geojson_file):
 
 
     for f in filesImg:
-        ### All .tif files 
+        ### All .tif files are analyzed
         dateV = []
         namesV = []
         ### The date is extracted from the name of the images
@@ -70,13 +70,13 @@ def generate_table_by_polygon(path_raster, geojson_file):
         print("Date: "+str(date2))
     
         for i in range(0,len(shapes)):
-            ### se recorren todos los elementos dentro del elemento geopandas (poligonos)
+            ### all polygons are analyzed
             polygon = [] 
-            ### se obtiene cada poligono
+            ### get each polygon
             polygon.append(shapes[i])
             ### se lee la imagen SAR 
             imgSAR = rasterio.open(f)
-            ### se enmascara el poligono en la imagen SAR, obteniendo solamente el poligono en estudio
+            ### the polygon is masked in the SAR image, obtaining only the polygon under study
             out_image, out_transform = rasterio.mask.mask(imgSAR, polygon, crop=True)
             # print(type(out_image))
 
@@ -93,7 +93,7 @@ def generate_table_by_polygon(path_raster, geojson_file):
     fields = np.array(_names).flatten()
     vv = np.array(_VV).flatten()
 
-    ### se genera el archivo .csv con los datos por fecha por cada poligono
+    ### the .csv file with the data by date for each polygon is generated
     df = pd.DataFrame({'Date':_date,
                         'Fields': fields,
                          'VV':vv})
