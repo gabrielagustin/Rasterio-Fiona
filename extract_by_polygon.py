@@ -21,36 +21,40 @@ import rasterio
 import rasterio.mask
 
 
-def generate_table_by_polygon(filesImg, polygons):
+def generate_table_by_polygon(path_raster, geojson_file):
     """ 
     Function that opens an image with .HDF format and reads a specific band.
     Parameters:
     -----------
-    filesImg : 
-    polygons : 
+    path_raster : path of directory where all the raster (.tif) file are
+    geojson_file : file that contains all the polygons
     Returns: 
     --------
-    None: generate a table with
+    None: generate a table with mean by polygon
     """
- 
+    
+    
+    ### All SAR images are listed (the .tif files within the directory) the glob library is used
+    files = sorted([f for f in glob.glob(path_raster + "**/*.tif", recursive=True)])
+    print("Number of Sentinel 1 images: " +str(len(files)))
+
+    ### The geojson file where are the polygons that represent the fields under study is opened
+    with fiona.open(geojson_file, "r") as shapefile:
+        shapes = [feature["geometry"] for feature in shapefile]
         
+    
     _names = []
     _VV = []
-    _VH = []
     _dateV = []
 
 
-    for f in files:
-        ### se recorren todos los archivos .tif    
+    for f in filesImg:
+        ### All .tif files 
         dateV = []
         namesV = []
-        VV = []
-        VH = []
-        # print(f[78:])
-        # print(f[95:103])
-        ### del nombre de las imagenes se extrae la fecja
+        ### The date is extracted from the name of the images
         date = f[95:103]
-        
+        # print(date)
         year = date[:4]
         # print(year)
         month = date[4:6]
@@ -58,7 +62,7 @@ def generate_table_by_polygon(filesImg, polygons):
         day = date[6:8]
         # print(day)
         
-        ### se le da formato a la fecha
+        ### Date is formatted
         date2 = year +str("/")+month+str("/")+day
         dateV = np.empty([len(shapes)], dtype =np.dtype('U25'))
         dateV.fill(date2)
@@ -77,37 +81,28 @@ def generate_table_by_polygon(filesImg, polygons):
             # print(type(out_image))
 
             vv = out_image[0][out_image[0] != 0]
-            vh = out_image[1][out_image[1] != 0]
             meanVV = np.mean(vv)
-            meanVH = np.mean(vh)
             namesV.append(i)
             VV.append(meanVV)
-            VH.append(meanVH)
                     
         _dateV.append(dateV)
         _names.append(namesV) 
         _VV.append(VV)
-        _VH.append(VH)
 
     _date = np.array(_dateV).flatten()
     fields = np.array(_names).flatten()
     vv = np.array(_VV).flatten()
-    vh = np.array(_VH).flatten()
 
     ### se genera el archivo .csv con los datos por fecha por cada poligono
-    df = pd.DataFrame({'Date':_date, 'Fields': fields, 'VV':vv, 'VH':vh})
-    df.to_csv(path + "data_mean_by_polygon.csv", decimal = ".")
-    print("Archivo creado con exito!")
+    df = pd.DataFrame({'Date':_date,
+                        'Fields': fields,
+                         'VV':vv})
+    df.to_csv(path_raster + "data_mean_by_polygon_S1.csv", decimal = ".")
+    print("File created successfully!")
 
 
 if __name__ == '__main__':
-    path = ".../Sentinel_1/Ascending_VV_VH/"
-    ### All SAR images are listed (the .tif files within the directory) the glob library is used
-    files = sorted([f for f in glob.glob(path + "**/*.tif", recursive=True)])
-    print("Number of Sentinel 1 images: " +str(len(files)))
 
-    ### The geojson file where are the polygons that represent the fields under study is opened
-    with fiona.open(".../XXX.geojson", "r") as shapefile:
-        shapes = [feature["geometry"] for feature in shapefile]
-        
-    generate_table_by_polygon(filesImg, polygons)
+    path_raster = ".../Sentinel_1/Ascending_VV_VH/"
+    geojson_file = ".../XXX.geojson"
+    generate_table_by_polygon(path_raster, geojson_file)
