@@ -1,6 +1,8 @@
 # Rasterio-Fiona
 Examples 
 
+* Extract polygon from a raster image
+
 
 
 Pages sources:
