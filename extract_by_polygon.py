@@ -44,6 +44,7 @@ def generate_table_by_polygon(path_raster, geojson_file):
     ### The geojson file where are the polygons that represent the fields under study is opened
     with fiona.open(geojson_file, "r") as shapefile:
         shapes = [feature["geometry"] for feature in shapefile]
+        names = [feature["properties"]["AREA"] for feature in shapefile]
         
     
     _names = []
@@ -86,7 +87,7 @@ def generate_table_by_polygon(path_raster, geojson_file):
 
             vv = out_image[0][out_image[0] != 0]
             meanVV = np.mean(vv)
-            namesV.append(i)
+            namesV.append(names[i])
             VV.append(meanVV)
                     
         _dateV.append(dateV)
