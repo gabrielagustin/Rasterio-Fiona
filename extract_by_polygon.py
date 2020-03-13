@@ -24,6 +24,9 @@ import rasterio.mask
 def generate_table_by_polygon(path_raster, geojson_file):
     """ 
     Function that opens an image with .HDF format and reads a specific band.
+    Reads a geojson file where is different polygons.
+    The polygons from raster files are extracted and the mean over each polygon is calculated. 
+    A .csv file is created with these data
     Parameters:
     -----------
     path_raster : path of directory where all the raster (.tif) file are
