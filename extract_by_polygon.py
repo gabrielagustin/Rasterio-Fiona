@@ -38,8 +38,8 @@ def generate_table_by_polygon(path_raster, geojson_file):
     
     
     ### All SAR images are listed (the .tif files within the directory) the glob library is used
-    files = sorted([f for f in glob.glob(path_raster + "**/*.tif", recursive=True)])
-    print("Number of Sentinel 1 images: " +str(len(files)))
+    filesImg = sorted([f for f in glob.glob(path_raster + "**/*.tif", recursive=True)])
+    print("Number of Sentinel 1 images: " +str(len(filesImg)))
 
     ### The geojson file where are the polygons that represent the fields under study is opened
     with fiona.open(geojson_file, "r") as shapefile:
