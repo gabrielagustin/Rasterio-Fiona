@@ -55,6 +55,7 @@ def generate_table_by_polygon(path_raster, geojson_file):
         ### All .tif files are analyzed
         dateV = []
         namesV = []
+        VV = []
         ### The date is extracted from the name of the images
         date = f[95:103]
         # print(date)
